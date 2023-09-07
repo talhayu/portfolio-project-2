@@ -1,12 +1,31 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserModule} from '../user/user.module';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { UserModule } from '../user/user.module';
+import { JwtModule } from '@nestjs/jwt';
+import { secret } from 'src/constants/user.constants';
+import { PassportModule } from '@nestjs/passport';
+import { TokenRevocationMiddleware } from './tokenrevoke/token-revocation.middleware';
+import { RevokedTokenModule } from './tokenrevoke/revoked-token.module';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [JwtModule, UserModule],
-  providers: [JwtService, AuthService],
+  imports: [
+    UserModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({
+      secret: secret,
+      signOptions: { expiresIn: '2h' },
+    }),
+    RevokedTokenModule, // Include the RevokedTokenModule
+  ],
+  providers: [AuthService, TokenRevocationMiddleware, JwtStrategy], // Include JwtStrategy in providers
   controllers: [AuthController],
 })
-export class AuthModule {}
+export class AuthModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TokenRevocationMiddleware)
+      .forRoutes({ path: 'auth/logout', method: RequestMethod.POST });
+  }
+}

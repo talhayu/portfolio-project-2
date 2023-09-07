@@ -1,4 +1,4 @@
-import { Body, Controller, Post, HttpCode, HttpStatus, Request,  UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, HttpCode, HttpStatus, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard, Public } from 'src/authguard/auth.guard';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -19,19 +19,25 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
-  async register(@Body() CreateUserDto: CreateUserDto): Promise<ApiResponse> {
-    const userRegister= await this.authService.register(CreateUserDto);
-    return new ApiResponse(true, userRegister)
+  async register(@Body() createUserDto: CreateUserDto): Promise<ApiResponse> {
+    // Modify the newUser object to include roles
+    const newUser: CreateUserDto = {
+      ...createUserDto,
+      roles: [true], // Assign roles here
+    };
+  
+    const userRegister = await this.authService.register(newUser);
+    return new ApiResponse(true, userRegister);
   }
-
+  
 
   @Public()
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   async signOut(@Request() req): Promise<string> {
-    const token = req.headers.authorization?.split(' ')[1]; 
+    const token = req.headers.authorization?.split(' ')[1];
     const message = await this.authService.signOut(token);
-    return message; 
+    return message;
   }
 }

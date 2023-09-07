@@ -1,3 +1,5 @@
+// note.service.ts
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -26,7 +28,7 @@ export class NoteService {
   async create(createNoteDto: CreateNoteDto): Promise<NoteEntity> {
     const errors = await validate(createNoteDto);
     if (errors.length > 0) {
-      throw new Error('Invalid data provided.');
+      throw new Error('Access token expire login again');
     }
     const newNote: Partial<NoteEntity> = {
       title: createNoteDto.title,

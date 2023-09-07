@@ -1,14 +1,16 @@
-import { Module } from '@nestjs/common';
-import { NoteService } from './note.service';
-import { NoteController } from './note.controller';
-import { NoteEntity } from './entities/note.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { NoteRepository } from './note.repository';
+        // note.module.ts
 
-@Module({
+        import { Module } from '@nestjs/common';
+        import { NoteService } from './note.service';
+        import { NoteController } from './note.controller';
+        import { NoteEntity } from './entities/note.entity';
+        import { TypeOrmModule } from '@nestjs/typeorm';
+        import { NoteRepository } from './note.repository';
+        import { RevokedTokenModule } from 'src/auth/tokenrevoke/revoked-token.module';
 
-  imports: [TypeOrmModule.forFeature([NoteEntity])],
-  controllers: [NoteController],
-  providers: [NoteService, NoteRepository]
-})
-export class NoteModule {}
+        @Module({
+          imports: [TypeOrmModule.forFeature([NoteEntity]), RevokedTokenModule],
+          controllers: [NoteController],
+          providers: [NoteService, NoteRepository],
+        })
+        export class NoteModule {}

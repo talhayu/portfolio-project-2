@@ -1,4 +1,10 @@
-import { Injectable, UnauthorizedException, ExecutionContext } from '@nestjs/common';
+// NoteAuthGuard.ts
+
+import {
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
@@ -12,10 +18,15 @@ export class NoteAuthGuard extends AuthGuard('jwt') {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (!user || !user.roles.includes('note_manager')) {
-      throw new UnauthorizedException('Not authorized to perform this action.');
+    // console.log('Request Object:', request);
+    // console.log('User Object:', user);
+    // console.log('Incoming Request Headers:', request.headers);
+
+    // Check if the user has the required role (e.g., "note_manager")
+    if (!user.roles==true) {
+      throw new UnauthorizedException('nhsdh.');
     }
 
-    return true; 
+    return true;
   }
 }

@@ -1,18 +1,20 @@
-import { EntityBase } from "src/base/base.entity";
-import { Column, Entity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
-export class UserEntity extends EntityBase{
-    @Column({unique: true})
-    username: string
+export class UserEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
+  @Column({ unique: true })
+  username: string;
 
-    password: string 
+  @Column()
+  password: string;
 
-    @Column({unique: true})
-    email: string
-    notes: any;
+  @Column({ unique: true })
+  email: string;
 
-   
+  @Column('simple-array', { default: [true] }) // Define roles as a simple array of strings
+  roles: boolean[];
+
 }
