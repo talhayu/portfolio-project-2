@@ -8,4 +8,5 @@
     @IsNotEmpty()
     @IsString()
     content: string;
+      userId: any;
     }

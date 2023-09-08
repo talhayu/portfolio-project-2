@@ -25,8 +25,9 @@ export class AuthService {
 
   async signIn(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOne(username);
+    console.log('User Data:', user);
     if (!user || !(await bcrypt.compare(pass, user.password))) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('saasa');
     }
 
     // Include user roles in the JWT payload

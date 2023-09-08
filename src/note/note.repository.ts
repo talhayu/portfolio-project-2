@@ -16,7 +16,7 @@ export class NoteRepository extends Repository<NoteEntity> {
   }
 
   async findNoteById(id: number): Promise<NoteEntity | undefined> {
-    const findOneOptions: FindOneOptions<NoteEntity> = { where: { id } };
+    const findOneOptions: FindOneOptions<NoteEntity> = { where: { id },  };
     return this.findOne(findOneOptions);
   }
 

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { NoteEntity } from 'src/note/entities/note.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity('user')
 export class UserEntity {
@@ -16,5 +17,8 @@ export class UserEntity {
 
   @Column('simple-array', { default: [true] }) // Define roles as a simple array of strings
   roles: boolean[];
+
+  @OneToMany(() => NoteEntity, note => note.user)
+  notes: NoteEntity[];
 
 }
