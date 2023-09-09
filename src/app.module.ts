@@ -6,6 +6,7 @@ import { databaseConfig } from './config/database.config';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { NoteModule } from './note/note.module';
+import { AdminNoteModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { NoteModule } from './note/note.module';
     UserModule,
     AuthModule,
     NoteModule,
+    AdminNoteModule
   ],
   controllers: [AppController],
   providers: [AppService],

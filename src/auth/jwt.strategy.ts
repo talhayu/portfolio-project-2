@@ -22,12 +22,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       console.log('Token is expired');
       throw new UnauthorizedException('Token is expired, login again');
     }
-    console.log(payload)
     // Check if the user has the required role (e.g., "note_manager")
-    if (!payload.roles || !payload.roles==true) {
-      console.log('User does not have the required role');
-      throw new UnauthorizedException('User does not have the required role');
-    }
+   // Check if the user has the required role (e.g., "USER")
+   if (!payload.roles || (payload.roles !== 'USER' && payload.roles !== 'ADMIN')) {
+    throw new UnauthorizedException('User does not have the required role');
+  }
+  
+
 
     // If the user has the required role and the token is not expired, return the user's information
     return { id: payload.id, username: payload.username, roles: payload.roles };

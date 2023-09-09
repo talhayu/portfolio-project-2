@@ -28,5 +28,10 @@ export class CreateUserDto {
 
   // @IsN()
   // @IsStrinconst newLocal = /g({ each: true }) / / Define; roles as an array of strings
-  roles: boolean[]; // Make sure roles property is defined
+  // roles: boolean[]; // Make sure roles property is defined
+
+  @IsNotEmpty()
+  @IsString()
+  roles: string;
+  
 }

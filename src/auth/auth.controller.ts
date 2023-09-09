@@ -21,9 +21,10 @@ export class AuthController {
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto): Promise<ApiResponse> {
     // Modify the newUser object to include roles
+ 
     const newUser: CreateUserDto = {
       ...createUserDto,
-      roles: [true], // Assign roles here
+       // Assign roles here
     };
   
     const userRegister = await this.authService.register(newUser);

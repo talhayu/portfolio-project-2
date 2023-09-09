@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -25,13 +26,13 @@ export class AuthService {
 
   async signIn(username: string, pass: string): Promise<any> {
     const user = await this.userService.findOne(username);
-    console.log('User Data:', user);
+    
     if (!user || !(await bcrypt.compare(pass, user.password))) {
-      throw new UnauthorizedException('saasa');
+      throw new UnauthorizedException();
     }
 
     // Include user roles in the JWT payload
-    console.log(user.roles)
+   
     const payload = { id: user.id, username: user.username, roles: user.roles };
 
     const accessToken = await this.jwtService.signAsync(payload, {
@@ -43,7 +44,11 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto): Promise<Partial<UserEntity>> {
-    const { username, password,  ...userData } = createUserDto;
+    const { username, password, roles,  ...userData } = createUserDto;
+
+    if (roles !== 'USER' && roles !== 'ADMIN') {
+      throw new BadRequestException('Invalid role provided.');
+    }
 
     // Check if the username already exists
     const existingUser = await this.userService.findOne(username);
@@ -54,24 +59,24 @@ export class AuthService {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const roles = createUserDto.roles || [];
+   
 
     // Create the user with the hashed password
     const user = await this.userService.createUser({
       username,
       password: hashedPassword,
-      roles: roles || [],
+      roles,
       ...userData,
     });
 
     const { password: _, ...result } = user;
-    console.log(result.roles);
+   
 
     return result;
   }
 
   async signOut(token: string): Promise<string> {
-    console.log('Token to revoke:', token);
+    
   const isTokenRevoked = await this.revokedTokenRepository.isTokenRevoked(token);
     if (!isTokenRevoked) {
       // Token is not revoked, so revoke it now

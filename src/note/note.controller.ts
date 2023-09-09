@@ -12,7 +12,7 @@ import {
   Headers,
   ForbiddenException,
 } from '@nestjs/common';
-import { NoteService } from './note.service';
+import { NoteService } from './service/note.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { ApiResponse } from 'src/shared/response/api-respose';
@@ -79,12 +79,8 @@ export class NoteController {
       }
 
       const userId = user.id; // Retrieve user ID from the JWT payload
-      console.log('ID:', id);
-      console.log('userid', userId);
 
       const note = await this.noteService.findOne(id);
-      console.log('Retrieved Note:', note);
-      console.log('note user id', note.user.id);
 
       if (note.user.id !== userId) {
         return new ApiResponse(
@@ -135,9 +131,9 @@ export class NoteController {
       }
       // Assign the user ID to the note before creating it
       createNoteDto.userId = user.id;
-      console.log(user.id);
+
       const createNote = await this.noteService.create(createNoteDto);
-      console.log(createNote);
+
       return new ApiResponse(true, createNote);
     } catch (error) {
       if (error instanceof BadRequestException) {
@@ -234,8 +230,42 @@ export class NoteController {
           'Access denied. This note does not belong to you.',
         );
       } else if (error instanceof BadRequestException) {
-        throw new BadRequestException( error.getResponse());
+        throw new BadRequestException(error.getResponse());
       }
+      throw error;
+    }
+  }
+
+  @Get('bytag/:tag')
+  @UseGuards(TokenRevocationMiddleware, JwtAuthGuard, NoteAuthGuard)
+  async findByTag(
+    @Param('tag') tag: string,
+    @User() user: any,
+    @Headers('authorization') token: string,
+  ): Promise<ApiResponse> {
+    try {
+      // Assuming you can access user information this way
+      const authToken = token.replace('Bearer ', ''); // Remove 'Bearer ' from the token
+
+      // Check if the token is revoked
+      const isTokenRevoked = await this.revokedTokenRepository.isTokenRevoked(
+        authToken,
+      );
+
+      if (isTokenRevoked) {
+        throw new BadRequestException(
+          'Token has been revoked, Please login again',
+        );
+      }
+      // Retrieve the user's ID from the JWT payload
+      const userId = user.id;
+
+      // Retrieve notes by tag and user ID
+      const notes = await this.noteService.findNotesByTagAndUserId(tag, userId);
+
+      return new ApiResponse(true, notes);
+    } catch (error) {
+      // Handle errors
       throw error;
     }
   }

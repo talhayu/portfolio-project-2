@@ -15,10 +15,9 @@ export class UserEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column('simple-array', { default: [true] }) // Define roles as a simple array of strings
-  roles: boolean[];
+  @Column()
+  roles: string;
 
-  @OneToMany(() => NoteEntity, note => note.user)
+  @OneToMany(() => NoteEntity, (note) => note.user)
   notes: NoteEntity[];
-
 }
