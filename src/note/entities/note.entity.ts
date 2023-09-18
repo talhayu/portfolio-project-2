@@ -11,7 +11,7 @@ export class NoteEntity extends EntityBase {
   @Column()
   content: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.notes)
+  @ManyToOne(() => UserEntity, (user) => user.notes, { onDelete: "CASCADE" })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 

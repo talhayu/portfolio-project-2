@@ -10,6 +10,7 @@ import { AdminAuthGuard } from './admin.guard';
 import { NoteRepository } from 'src/note/note.repository';
 import { RevokedTokenRepository } from 'src/auth/tokenrevoke/revoked-token.repository';
 import { RevokedTokenModule } from 'src/auth/tokenrevoke/revoked-token.module';
+import { UserRepository } from 'src/user/repository/user.repository';
 // Import your AdminAuthGuard
 
 @Module({
@@ -21,6 +22,7 @@ import { RevokedTokenModule } from 'src/auth/tokenrevoke/revoked-token.module';
     JwtAuthGuard,
     AdminAuthGuard,
     NoteRepository,
+    UserRepository,
     RevokedTokenRepository,
     
   ], // Include your AdminAuthGuard in providers

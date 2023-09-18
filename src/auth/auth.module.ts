@@ -8,6 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TokenRevocationMiddleware } from './tokenrevoke/token-revocation.middleware';
 import { RevokedTokenModule } from './tokenrevoke/revoked-token.module';
 import { JwtStrategy } from './jwt.strategy';
+import { TokenRepository } from 'src/token/token.repository';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
     RevokedTokenModule, // Include the RevokedTokenModule
   ],
-  providers: [AuthService, TokenRevocationMiddleware, JwtStrategy], // Include JwtStrategy in providers
+  providers: [AuthService, TokenRevocationMiddleware, JwtStrategy, TokenRepository], // Include JwtStrategy in providers
   controllers: [AuthController],
 })
 export class AuthModule {

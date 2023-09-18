@@ -8,7 +8,7 @@ export class CreateNoteDto {
   @IsNotEmpty()
   @IsString()
   content: string;
-
+  
   userId: any;
 
   @IsOptional() // Make the tags field optional

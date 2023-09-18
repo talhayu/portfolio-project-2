@@ -1,5 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOneOptions, Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
@@ -26,4 +26,20 @@ export class UserRepository extends Repository<UserEntity> {
       throw error;
     }
   }
+    async findAll(): Promise<UserEntity[]> {
+      return this.find();
+    }
+
+    async findUserById(id: number): Promise<UserEntity | undefined> {
+      const findOneOptions: FindOneOptions<UserEntity> = { where: { id },  };
+      return this.findOne(findOneOptions);
+    }
+
+    async deleteUserById(id: number): Promise<void>{
+      await this.createQueryBuilder()
+      .delete()
+      .from(UserEntity)
+      .where("id = :id", { id })
+      .execute();
+    }
 }

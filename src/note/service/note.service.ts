@@ -55,7 +55,7 @@ export class NoteService {
  async create(createNoteDto: CreateNoteDto): Promise<NoteEntity> {
   const errors = await validate(createNoteDto);
   if (errors.length > 0) {
-    throw new Error('Access token expired, please login again');
+    throw new Error();
   }
  
 

@@ -20,4 +20,7 @@ export class UserEntity {
 
   @OneToMany(() => NoteEntity, (note) => note.user)
   notes: NoteEntity[];
+    jwtToken: any;
+
+
 }

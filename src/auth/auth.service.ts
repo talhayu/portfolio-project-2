@@ -13,6 +13,7 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { RevokedTokenRepository } from './tokenrevoke/revoked-token.repository';
+import { TokenRepository } from 'src/token/token.repository';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,8 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly revokedTokenRepository: RevokedTokenRepository
+    private readonly revokedTokenRepository: RevokedTokenRepository,
+    private readonly tokenRepository: TokenRepository
   ) {console.log('AuthService constructor called');}
 
   async signIn(username: string, pass: string): Promise<any> {
@@ -39,6 +41,8 @@ export class AuthService {
       secret,
       expiresIn: '2h',
     });
+
+    await this.tokenRepository.saveToken(accessToken, new Date())
 
     return { accessToken };
   }
